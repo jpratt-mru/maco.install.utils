@@ -72,6 +72,6 @@ Function createUninstallEntryInRegistry ($ProgramName, $Version) {
   # make the desired registry entries
   New-ItemProperty -Path $KeyPath -Name "DisplayName" -PropertyType "String" -Value $ProgramName -Force
   New-ItemProperty -Path $KeyPath -Name "DisplayVersion" -PropertyType "String" -Value $Version -Force
-  New-ItemProperty -Path $KeyPath -Name "Publisher" -PropertyType "String" -Value "MRU MACO" -Force
+  New-ItemProperty -Path $KeyPath -Name "Publisher" -PropertyType "String" -Value "MACO Install" -Force
   New-ItemProperty -Path $KeyPath -Name "UninstallString" -PropertyType "String" -Value "$UninstallDir\uninstall.cmd" -Force
 }
