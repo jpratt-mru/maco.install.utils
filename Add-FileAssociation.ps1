@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-function Install-ChocolateyFileAssociation {
-<#
+function Add-FileAssociation {
+  <#
 .SYNOPSIS
 **NOTE:** Administrative Access Required.
 
@@ -54,25 +54,25 @@ $sublimeExe = "$sublimeDir\tools\sublime_text.exe"
 Install-ChocolateyFileAssociation ".txt" $sublimeExe
 
 #>
-param(
-  [parameter(Mandatory=$true, Position=0)][string] $extension,
-  [parameter(Mandatory=$true, Position=1)][string] $executable,
-  [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
-)
+  param(
+    [parameter(Mandatory = $true, Position = 0)][string] $extension,
+    [parameter(Mandatory = $true, Position = 1)][string] $executable,
+    [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
+  )
 
   Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
 
-  if(-not(Test-Path $executable)){
+  if (-not(Test-Path $executable)) {
     $errorMessage = "`'$executable`' does not exist, not able to create association"
     Write-Error $errorMessage
     throw $errorMessage
   }
-  $extension=$extension.trim()
-  if(-not($extension.StartsWith("."))) {
-      $extension = ".$extension"
+  $extension = $extension.trim()
+  if (-not($extension.StartsWith("."))) {
+    $extension = ".$extension"
   }
   $fileType = Split-Path $executable -leaf
-  $fileType = $fileType.Replace(" ","_")
+  $fileType = $fileType.Replace(" ", "_")
   $elevated = @"
     cmd /c "assoc $extension=$fileType"
     cmd /c 'ftype $fileType="$executable" "%1" "%*"'

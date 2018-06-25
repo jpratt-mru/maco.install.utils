@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-function Install-ChocolateyPath {
-<#
+function Add-ToPath {
+  <#
 .SYNOPSIS
 **NOTE:** Administrative Access Required when `-PathType 'Machine'.`
 
@@ -66,11 +66,11 @@ Set-EnvironmentVariable
 .LINK
 Get-ToolsLocation
 #>
-param(
-  [parameter(Mandatory=$true, Position=0)][string] $pathToInstall,
-  [parameter(Mandatory=$false, Position=1)][System.EnvironmentVariableTarget] $pathType = [System.EnvironmentVariableTarget]::User,
-  [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
-)
+  param(
+    [parameter(Mandatory = $true, Position = 0)][string] $pathToInstall,
+    [parameter(Mandatory = $false, Position = 1)][System.EnvironmentVariableTarget] $pathType = [System.EnvironmentVariableTarget]::User,
+    [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
+  )
 
   Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
   ## Called from chocolateysetup.psm1 - wrap any Write-Host in try/catch
@@ -80,11 +80,11 @@ param(
   #get the PATH variable
   Update-SessionEnvironment
   $envPath = $env:PATH
-  if (!$envPath.ToLower().Contains($pathToInstall.ToLower()))
-  {
+  if (!$envPath.ToLower().Contains($pathToInstall.ToLower())) {
     try {
       Write-Host "PATH environment variable does not have $pathToInstall in it. Adding..."
-    } catch {
+    }
+    catch {
       Write-Verbose "PATH environment variable does not have $pathToInstall in it. Adding..."
     }
 
@@ -101,11 +101,13 @@ param(
     if ($pathType -eq [System.EnvironmentVariableTarget]::Machine) {
       if (Test-ProcessAdminRights) {
         Set-EnvironmentVariable -Name 'Path' -Value $actualPath -Scope $pathType
-      } else {
+      }
+      else {
         $psArgs = "Install-ChocolateyPath -pathToInstall `'$originalPathToInstall`' -pathType `'$pathType`'"
         Start-ChocolateyProcessAsAdmin "$psArgs"
       }
-    } else {
+    }
+    else {
       Set-EnvironmentVariable -Name 'Path' -Value $actualPath -Scope $pathType
     }
 

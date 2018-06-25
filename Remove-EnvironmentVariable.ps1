@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-function Uninstall-ChocolateyEnvironmentVariable {
-<#
+function Remove-EnvironmentVariable {
+  <#
 .SYNOPSIS
 **NOTE:** Administrative Access Required when `-VariableType 'Machine'.`
 
@@ -71,23 +71,25 @@ Set-EnvironmentVariable
 .LINK
 Install-ChocolateyPath
 #>
-param(
-  [parameter(Mandatory=$true, Position=0)][string] $variableName,
-  [parameter(Mandatory=$false, Position=1)]
-  [System.EnvironmentVariableTarget] $variableType = [System.EnvironmentVariableTarget]::User,
-  [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
-)
+  param(
+    [parameter(Mandatory = $true, Position = 0)][string] $variableName,
+    [parameter(Mandatory = $false, Position = 1)]
+    [System.EnvironmentVariableTarget] $variableType = [System.EnvironmentVariableTarget]::User,
+    [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
+  )
 
   Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
 
   if ($variableType -eq [System.EnvironmentVariableTarget]::Machine) {
     if (Test-ProcessAdminRights) {
       Set-EnvironmentVariable -Name $variableName -Value $null -Scope $variableType
-    } else {
+    }
+    else {
       $psArgs = "Install-ChocolateyEnvironmentVariable -variableName `'$variableName`' -variableValue $null -variableType `'$variableType`'"
       Start-ChocolateyProcessAsAdmin "$psArgs"
     }
-  } else {
+  }
+  else {
     Set-EnvironmentVariable -Name $variableName -Value $null -Scope $variableType
   }
 
