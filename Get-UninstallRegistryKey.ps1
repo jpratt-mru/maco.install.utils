@@ -15,7 +15,7 @@
 # limitations under the License.
 
 function Get-UninstallRegistryKey {
-<#
+  <#
 .SYNOPSIS
 Retrieve registry key(s) for system-installed applications from an
 exact or wildcard search.
@@ -105,22 +105,22 @@ Install-ChocolateyInstallPackage
 .LINK
 Uninstall-ChocolateyPackage
 #>
-[CmdletBinding()]
-param(
-  [parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true)]
-  [string] $softwareName,
-  [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
-)
+  [CmdletBinding()]
+  param(
+    [parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [string] $softwareName,
+    [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
+  )
 
- # Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
+  # Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
 
   if ($softwareName -eq $null -or $softwareName -eq '') {
     throw "$SoftwareName cannot be empty for Get-UninstallRegistryKey"
   }
 
   $ErrorActionPreference = 'Stop'
-  $local_key       = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
-  $machine_key     = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
+  $local_key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
+  $machine_key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
   $machine_key6432 = 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
 
   Write-Verbose "Retrieving all uninstall registry keys"
@@ -134,19 +134,21 @@ param(
 
     $keyPaths = $keys | Select-Object -ExpandProperty PSPath
     try {
-      [array]$foundKey = Get-ItemProperty -Path $keyPaths -ErrorAction Stop | ? { $_.DisplayName -like $softwareName }
+      [array]$foundKey = Get-ItemProperty -Path $keyPaths -ErrorAction Stop | Where-Object { $_.DisplayName -like $softwareName }
       $success = $true
-    } catch {
+    }
+    catch {
       Write-Debug "Found bad key."
-      foreach ($key in $keys){
+      foreach ($key in $keys) {
         try {
           Get-ItemProperty $key.PsPath > $null
-        } catch {
+        }
+        catch {
           $badKey = $key.PsPath
         }
       }
       Write-Verbose "Skipping bad key: $badKey"
-      [array]$keys = $keys | ? { $badKey -NotContains $_.PsPath }
+      [array]$keys = $keys | Where-Object { $badKey -NotContains $_.PsPath }
     }
 
     if ($success) { break; }
