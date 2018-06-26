@@ -89,3 +89,7 @@ Function defaultUserStartMenuLocation {
 Function userStartMenuLocation($User) {
   "C:\Users\$User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
 }
+
+Function getEnvironmentLocation ($SID) {
+  "Registry::HKEY_USERS\$SID\Environment"
+}
