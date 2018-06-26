@@ -10,7 +10,7 @@ Function Invoke-StandardInstaller ($InstallerName, $Flags) {
 
 Function installMSI ($MSIFileName, $Flags = "") {
   Invoke-CommandLine @"
-    cd .. && msiexec /i "installation-files\${MSIFileName}" ${Flags} /qn
+    cd .. && msiexec /i "installation-files\${MSIFileName}" ${Flags} /qn /norestart
 "@
 }
 
