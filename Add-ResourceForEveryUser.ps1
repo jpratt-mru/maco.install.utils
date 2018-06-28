@@ -12,4 +12,3 @@ Function Add-ResourceForEveryUser ($ResourceToAdd, $RelativePathToResource) {
   }
   Copy-Item $ResourceToAdd -Destination C:\Users\Default\$RelativePathToResource -Force -Recurse
 }
-
