@@ -9,9 +9,22 @@
 Function Remove-ResourceForEveryUser ($RelativePathToResource) {
   Foreach ($User in $(getUserNames)) {
     Write-Host "remove resource is removing C:\Users\$User\$RelativePathToResource"
-    Remove-Item C:\Users\$User\$RelativePathToResource -Force -Recurse
+    If (Test-Path C:\Users\$User\$RelativePathToResource) {
+      Remove-Item C:\Users\$User\$RelativePathToResource -Force -Recurse
+      Write-Host "removed"
+    }
+    Else {
+      Write-Host "resource not found"
+    }
+    
   }
 
   Write-Host "remove resource is removing C:\Users\Default\$RelativePathToResource"
-  Remove-Item C:\Users\Default\$RelativePathToResource -Force -Recurse
+  If (Test-Path C:\Users\Default\$RelativePathToResource) {
+    Remove-Item C:\Users\Default\$RelativePathToResource -Force -Recurse
+    Write-Host "removed"
+  }
+  Else {
+    Write-Host "resource not found"
+  }
 }

@@ -60,7 +60,7 @@ Install-ChocolateyFileAssociation ".txt" $sublimeExe
     [parameter(ValueFromRemainingArguments = $true)][Object[]] $ignoredArguments
   )
 
-  Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
+  # Write-FunctionCallLogMessage -Invocation $MyInvocation -Parameters $PSBoundParameters
 
   if (-not(Test-Path $executable)) {
     $errorMessage = "`'$executable`' does not exist, not able to create association"
