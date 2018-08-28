@@ -1,3 +1,5 @@
+. "$PSScriptRoot\global-maco-constants.ps1"
+. "$PSScriptRoot\shared-helpers.ps1"
 Function Remove-RegistryEntryForEveryUser ($RegRoot, $RegEntry) {
   $ThingToDo = "removeRegistryEntry $RegRoot $RegEntry"
   # Users who are currently logged in
@@ -12,7 +14,6 @@ Function Remove-RegistryEntryForEveryUser ($RegRoot, $RegEntry) {
 
 Function removeRegistryEntry ($RegRoot, $RegEntry, $SID) {
 
-  
   $RegPath = "Registry::HKEY_USERS\$SID\$RegRoot\$RegEntry"
 
   If (Test-Path -Path $RegPath) {

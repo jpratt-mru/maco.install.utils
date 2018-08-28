@@ -18,6 +18,7 @@ Function doToAllUsersWithProfileNotLoggedIn ($ThingToDo) {
   $ProfileListInRegistry = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\ProfileList'
   $LoggedInSIDs = getLoggedInSIDs
   $SidsOfNonLoggedInProfiles = Get-ChildItem $ProfileListInRegistry -Recurse | Where-Object { ($_.Name -match "S-\d-\d+-(\d+-){1,14}\d+$") -and (-not($LoggedInSIDs -contains $_.pschildname)) }
+  #TODO : "SID" is not accurate - it's actually a path in the registry to that user's SID!
   foreach ($SID in $SidsOfNonLoggedInProfiles) {
     if ($SID) {
       $UserRegistryHiveFilePath = "$($SID.GetValue('ProfileImagePath'))\NTUser.dat"
