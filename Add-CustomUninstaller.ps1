@@ -10,13 +10,13 @@
 #
 # ProgramName => the name that shows up in Windows uninstall dialog
 # Version => version number that shows up in the same
+# Icon => icon that shows up in the Add/Remove Programs screen
 # OriginalUninstallRegistryKey => name of the uninstall key in the registry from the default installer
-# Isx86 => indicates that the original uninstaller is to be found in the Wow6432Node
 #
-Function Add-CustomUninstaller ($ProgramName, $Version, $OriginalUninstallRegistryKey = "", $Isx86 = $false) {
+Function Add-CustomUninstaller ($ProgramName, $Version, $Icon="", $OriginalUninstallRegistryKey = "") {
   createLocalUninstallDirectory $ProgramName
   removeDefaultUninstallEntryFromRegistry $OriginalUninstallRegistryKey
-  createUninstallEntryInRegistry $ProgramName $Version
+  createUninstallEntryInRegistry $ProgramName $Version $Icon
 }
 
 #
@@ -62,7 +62,7 @@ Function removeDefaultUninstallEntryFromRegistry ($OriginalUninstallRegistryKey)
 # to some registry entries (typically in HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall).
 # This method makes those entries.
 #
-Function createUninstallEntryInRegistry ($ProgramName, $Version) {
+Function createUninstallEntryInRegistry ($ProgramName, $Version, $Icon) {
   # make the uninstaller key in the registry
   New-Item -Path $global:UNINSTALL_REGISTRY_ROOT_X64 -Name $ProgramName -Force
 
@@ -74,4 +74,5 @@ Function createUninstallEntryInRegistry ($ProgramName, $Version) {
   New-ItemProperty -Path $KeyPath -Name "DisplayVersion" -PropertyType "String" -Value $Version -Force
   New-ItemProperty -Path $KeyPath -Name "Publisher" -PropertyType "String" -Value "MACO Install" -Force
   New-ItemProperty -Path $KeyPath -Name "UninstallString" -PropertyType "String" -Value "$UninstallDir\uninstall.cmd" -Force
+  New-ItemProperty -Path $KeyPath -Name "DisplayIcon" -PropertyType "String" -Value $Icon -Force
 }
